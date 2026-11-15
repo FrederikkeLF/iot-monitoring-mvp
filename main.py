@@ -1,4 +1,5 @@
 
+import logging
 from datetime import datetime, timezone
 
 from fastapi import FastAPI
@@ -11,6 +12,9 @@ app = FastAPI(title="Intelligent IoT - Monitoring MVP")
 
 # Grænseværdi for temperatur
 THRESHOLD = 80
+
+# Logger til overvågning og fejlfinding
+logger = logging.getLogger("uvicorn.error")
 
 # Beskriv en sensormåling
 class Measurement(BaseModel):
@@ -157,7 +161,22 @@ def save_mysql_measurement(measurement: Measurement):
         # Gem ændringerne permanent
         connection.commit()
 
+        # Registrer resultatet i systemloggen
+        logger.info(
+            "Measurement %s saved successfully",
+            measurement_id
+        )
+
+        if status == "alarm":
+            logger.warning(
+                "AnomalyDetected for measurement %s",
+                measurement_id
+            )
+    
     except Exception:
+        logger.exception(
+            "Database error while saving measurement"
+        )
         connection.rollback()
         raise
 

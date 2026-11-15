@@ -1,4 +1,5 @@
 
+from unittest.mock import MagicMock
 import pytest
 
 from fastapi.testclient import TestClient
@@ -120,3 +121,51 @@ def test_alarm_persisted_in_mysql():
 
     assert alarm is not None
     assert alarm["message"] == "Temperature exceeds threshold"
+
+
+# Test 5: Simuler en databasefejl
+def test_database_error_logging(monkeypatch, caplog):
+
+    # Opret en falsk databaseforbindelse
+    fake_connection = MagicMock()
+
+    fake_cursor = (
+        fake_connection.cursor.return_value
+        .__enter__.return_value
+    )
+
+    # Simuler en fejl, når systemet forsøger at gemme data
+    fake_cursor.execute.side_effect = RuntimeError(
+        "Simulated database failure"
+    )
+
+    # Brug den falske forbindelse i denne test
+    monkeypatch.setattr(
+        "main.connect_mysql",
+        lambda: fake_connection
+    )
+
+    # Kontroller at fejlen registreres
+    with caplog.at_level("ERROR", logger="uvicorn.error"):
+
+        with pytest.raises(
+            RuntimeError,
+            match="Simulated database failure"
+        ):
+
+            client.post(
+                "/measurements",
+                json={
+                    "device_id": "TEST-ERROR-001",
+                    "temperature": 95
+                }
+            )
+
+    # Kontroller at ændringerne annulleres
+    fake_connection.rollback.assert_called_once()
+
+    # Kontroller at forbindelsen lukkes
+    fake_connection.close.assert_called_once()
+
+    # Kontroller ERROR-loggen
+    assert "Database error while saving measurement" in caplog.text
