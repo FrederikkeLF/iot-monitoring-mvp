@@ -42,16 +42,40 @@ Når POST /measurements modtager en måling:
 
 ### 4. Relation til Domain-Driven Design
 
-Løsningen tager udgangspunkt i Managed Services
-og den forretningsmæssige aktivitet med at
-overvåge IoT-enheder.
+MVP'en tager udgangspunkt i virksomhedens Managed
+Services-forretning og det identificerede core
+subdomain Monitoring & Analytics fra delopgave 1.
 
-SensorValueReceived og AnomalyDetected repræsenterer
-hændelser, som er relevante for dette domæne.
+Domænet understøtter capability'en Monitoring &
+Analytics Management og værdistrømmen Deliver
+Managed Monitoring Service.
 
-I denne MVP registreres events i en databasetabel.
-Der er endnu ikke implementeret en selvstændig
-event broker eller asynkron event-distribution.
+Systemet demonstrerer en afgrænset del af
+overvågningsprocessen, hvor sensordata modtages,
+behandles og vurderes mod en grænseværdi.
+
+Ved modtagelse af en måling registreres eventet
+SensorValueReceived.
+
+Hvis temperaturen overstiger 80 °C, registreres
+AnomalyDetected, og systemet opretter en alarm.
+
+Alarmen repræsenterer en potentiel driftsafvigelse,
+ikke en bekræftet fejl eller et automatisk
+servicebehov.
+
+I delopgave 1 skelnes mellem måling,
+driftsafvigelse og servicebehov. MVP'en
+implementerer de første trin, men ikke den
+efterfølgende faglige vurdering eller overdragelse
+til Service Management.
+
+Domæne-events gemmes i MySQL. Der er endnu ikke
+implementeret en message broker eller asynkron
+event-distribution.
+
+Løsningen er derfor en teknisk afgrænsning af
+den arkitektur, der blev foreslået i delopgave 1.
 
 ### 5. Arkitektoniske afgrænsninger
 
