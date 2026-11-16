@@ -173,3 +173,59 @@ MySQL-data bevares i Docker-volumet.
 
 Bemærk: Brug ikke docker compose down -v,
 medmindre du bevidst vil slette databasevolumet.
+
+
+## Simuleret IoT-enhed – Raspberry Pi-forberedelse
+
+Projektet indeholder en Python-baseret IoT-simulator
+i filen `device_simulator.py`.
+
+Simulatoren efterligner en IoT-enhed ved automatisk
+at generere temperaturmålinger mellem 60 og 100 °C.
+
+Målingerne sendes som JSON via HTTP POST til
+REST API'et hvert 10. sekund.
+
+### Start simulatoren
+
+Start først API'et med Docker Compose.
+
+Åbn derefter en separat terminal og kør:
+
+```bash
+python device_simulator.py
+```
+
+Simulatoren sender automatisk målinger til:
+
+`http://127.0.0.1:8002/measurements`
+
+Stop simulatoren med `Ctrl + C`.
+
+### Kontroller målingerne
+
+Åbn Swagger på:
+
+`http://127.0.0.1:8002/docs`
+
+Brug `GET /measurements`, og find målingerne med:
+
+`device_id: RPI-SIM-001`
+
+Ved temperaturer over 80 °C registrerer API'et
+en afvigelse og opretter en alarm.
+
+### Fremtidig Raspberry Pi-integration
+
+Simulatoren kan senere tilpasses til en fysisk
+Raspberry Pi med en tilsluttet temperatursensor.
+
+Den simulerede temperaturfunktion skal da erstattes
+med kode, der aflæser den fysiske sensor.
+
+API-adressen kan konfigureres med miljøvariablen
+`IOT_API_URL`, hvis API'et kører på en anden computer.
+
+Der er endnu ikke tilsluttet fysisk hardware eller
+gennemført en remote test fra en Raspberry Pi.
+```
