@@ -80,8 +80,9 @@ Følgende er gennemført:
 - Verifikation af eksisterende data efter deployment
 - API-test med Swagger og Postman
 
-Test fra en anden computer er endnu ikke
-gennemført.
+REST API'et er testet fra en anden computer
+med succes. Testen bekræfter, at API'et kan
+tilgås over netværket fra en anden enhed.
 
 ### 6. Sikkerhed og begrænsninger
 

@@ -69,7 +69,7 @@ GitHub Actions udfører automatisk:
 - Docker Compose: Testet
 - Postman: Testet
 - Lokal deployment fra GitHub-image: Testet
-- Test fra anden computer: Ikke gennemført
+- Test fra anden computer: Gennemført med succes
 
 
 ## Installation og lokal opstart
